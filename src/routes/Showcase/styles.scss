@@ -1,0 +1,15 @@
+.slider {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  color: #ECEFF1;
+  background-color: #333333;
+  user-select: none;
+
+  &__controls {
+    position: absolute;
+    left: 80px;
+    bottom: 40px;
+    display: flex;
+  }
+}

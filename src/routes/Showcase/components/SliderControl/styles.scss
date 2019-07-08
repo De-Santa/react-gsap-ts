@@ -1,0 +1,40 @@
+.slider-control {
+  position: relative;
+  padding: 0;
+  padding-left: 10px;
+  margin-right: 20px;
+  color: #ffffff;
+  background-color: transparent;
+  border: none;
+  text-align: left;
+  outline: none;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background-color: #ffffff;
+    transform: scaleY(0);
+    transition: transform .3s linear;
+    transform-origin: 100% 100%;
+  }
+  &--is-active::before {
+    transform: scaleY(1);
+  }
+
+  &__title, &__subtitle {
+    display: block;
+  }
+
+  &__title {
+    margin-bottom: 8px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  &__subtitle {
+    font-weight: 400;
+  }
+}
