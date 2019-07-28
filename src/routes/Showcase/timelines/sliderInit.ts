@@ -9,6 +9,7 @@ export const sliderInit = (sliderControls: Array<HTMLButtonElement>, slides: Arr
       opacity: 0,
       scaleX: 1.1,
       scaleY: 1.1,
+      zIndex: 1
     })
     .to(startSlide, 1, {
       opacity: 1,

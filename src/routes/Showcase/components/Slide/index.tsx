@@ -1,28 +1,33 @@
-import React, { useRef, useState, useLayoutEffect } from "react";
+import React, { useRef, useState, useLayoutEffect } from 'react';
+import { Link } from 'react-router-dom'
 import "./styles.scss";
 
 interface ISlideProps {
+  productLink: string,
   slideData: any
 }
 
 export const Slide = React.forwardRef<any, ISlideProps>((props, ref) => {
-  const { slideData: { title, description, imageUrl } } = props;
+  const {
+    productLink,
+    slideData: { title, description, imageUrl }
+  } = props;
 
   const titleRef = useRef<HTMLHeadingElement>(null);
 
-  const [descrWidth, setDescrWidth] = useState('auto');
+  const [descriptionWidth, setDescriptionWidth] = useState('auto');
 
+  /** title width equal to description width **/
   useLayoutEffect(
     () => {
       const title = titleRef.current;
-      setDescrWidth(title ? `${title.offsetWidth}px` : 'auto')
+      setDescriptionWidth(title ? `${title.offsetWidth}px` : 'auto')
     },
     []
-  )
+  );
 
   return (
     <div
-      key={title}
       ref={ref}
       className="slide"
       style={{opacity: 0}}
@@ -39,13 +44,16 @@ export const Slide = React.forwardRef<any, ISlideProps>((props, ref) => {
         </h2>
         <p
           className="slide__description"
-          style={{maxWidth: descrWidth}}
+          style={{maxWidth: descriptionWidth}}
         >
           {description}
         </p>
-        <a className="slide__link" href="/">
+        <Link
+            className="slide__link"
+            to={productLink}
+        >
           More
-        </a>
+        </Link>
       </div>
     </div>
   );
