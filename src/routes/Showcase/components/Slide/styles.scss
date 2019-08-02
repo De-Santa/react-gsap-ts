@@ -1,6 +1,6 @@
 .slide,
 .slide__image-wrapper,
-.slide__image-wrapper::after,
+.slide__image-fade,
 .slide__image {
   position: absolute;
   top: 0;
@@ -15,15 +15,13 @@
   flex-direction: column;
   justify-content: center;
 
-  &__image-wrapper {
-    &::after {
-      content: '';
-      background-color: rgba(21, 13, 5, 0.6);
-    }
-  }
-
   &__image {
     object-fit: cover;
+  }
+
+  &__image-fade {
+    background-color: #150d05;
+    opacity: .6;
   }
 
   &__content {

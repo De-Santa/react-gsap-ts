@@ -1,33 +1,39 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useCallback, useState } from 'react';
 
-const setInitialSlide = (slideNum: number) => {
+const setInitialSlide = (slideNum: number):void => {
   window.sessionStorage.setItem('initialSlide', slideNum.toString())
 };
 
-const getInitialSlide = () => {
-  console.log('get initial slide run');
+const getInitialSlide = ():number => {
   const slide = window.sessionStorage.getItem('initialSlide');
   return slide ? +slide : 0
 };
 
-const ShowcaseContext = createContext(null);
+interface IShowcaseContext {
+  currentSlide: number;
+  handleSlideChange: (...args: any[]) => void;
+}
 
-const ShowcaseProvider = ({ children }: any) => {
-  const [currentSlide, setCurrentSlide] = useState(getInitialSlide);
+const ShowcaseContext = createContext<IShowcaseContext>({
+  currentSlide: 0,
+  handleSlideChange: (slideNum: number) => null
+});
 
-  const handleSlideChange = (slideNum: number) => {
-    setInitialSlide(slideNum);
-    setCurrentSlide(slideNum)
-  };
+const ShowcaseProvider:React.FC = (props) => {
+  const { children } = props;
+
+  const [currentSlide, setCurrentSlide] = useState<number>(getInitialSlide);
+
+  const handleSlideChange = useCallback(
+    (slideNum:number):void => {
+      setInitialSlide(slideNum);
+      setCurrentSlide(slideNum)
+    },
+    []
+  );
 
   return (
-    <ShowcaseContext.Provider
-      // @ts-ignore
-      value={{
-        currentSlide,
-        handleSlideChange
-      }}
-    >
+    <ShowcaseContext.Provider value={{ currentSlide, handleSlideChange }}>
       {children}
     </ShowcaseContext.Provider>
   );

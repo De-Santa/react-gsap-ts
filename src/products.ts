@@ -1,4 +1,12 @@
-export const slidesData = [
+export interface IProduct {
+  description: string;
+  id: string;
+  imageUrl: string;
+  subtitle: string;
+  title: string;
+}
+
+export const products: IProduct[] = [
   {
     description: "At Mclaren, we refuse to accept what`s gone before.Instead, we find a different way. A better way.",
     id: "1",

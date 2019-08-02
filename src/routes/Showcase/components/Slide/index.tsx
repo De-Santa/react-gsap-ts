@@ -4,13 +4,17 @@ import "./styles.scss";
 
 interface ISlideProps {
   productLink: string,
-  slideData: any
+  productData: {
+    description: string,
+    imageUrl: string,
+    title: string
+  }
 }
 
 export const Slide = React.forwardRef<any, ISlideProps>((props, ref) => {
   const {
     productLink,
-    slideData: { title, description, imageUrl }
+    productData: { description, imageUrl, title }
   } = props;
 
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -34,6 +38,7 @@ export const Slide = React.forwardRef<any, ISlideProps>((props, ref) => {
     >
       <div className="slide__image-wrapper">
         <img className="slide__image" src={imageUrl} alt={title} />
+        <div className="slide__image-fade" />
       </div>
       <div className="slide__content">
         <h2

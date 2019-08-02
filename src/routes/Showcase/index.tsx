@@ -1,39 +1,57 @@
 import React, { useContext, useRef, useEffect } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import { ShowcaseContext } from  '../../context/ShowcaseContext';
 import { TimelineLite } from 'gsap';
 import { slideSwitch, sliderInit } from './timelines';
 import { Slide, SliderControl } from './components';
-import { slidesData } from "./slidesData";
+import { products } from '../../products';
 import './styles.scss';
 import { Transition } from 'react-transition-group';
 
-interface IShowcaseTransition {
-  match: any
+interface IShowcaseTransition extends RouteComponentProps {
+  currentSlide: number
 }
 
 const ShowcaseTransition: React.FC<IShowcaseTransition> = (props) => {
-  const { children, match } = props;
+  const { children, currentSlide, match } = props;
 
-  const { current: tl } = useRef(new TimelineLite());
+  // const { current: tl } = useRef<TimelineLite>(new TimelineLite());
   
   return (
     <Transition
       addEndListener={(node, done) => {
+        const activeSlide = node.children[currentSlide];
+        const imageFade = activeSlide.getElementsByClassName('slide__image-fade')[0];
+
         if (match !== null) {
-          tl.from(node, .6, {
-            opacity: 0,
-            onComplete: done
-          });
+          const tl = new TimelineLite({ delay: .5 });
+          tl.call(console.log, ['enter showcase', node])
+            .set(imageFade, {
+              backgroundColor: '#000000',
+              opacity: .9,
+            })
+            .to(imageFade, .5, {
+              backgroundColor: '#150d05',
+              opacity: .6
+            })
         } else {
-          tl.to(node, .6, {
-            opacity: 0,
-            onComplete: done
-          });
+          const tl = new TimelineLite();
+          tl.call(console.log, ['exit showcase', node])
+            .set(node, { zIndex: 1 })
+            .set(imageFade, {
+              backgroundColor: '#150d05',
+              opacity: .6
+            })
+            .to(imageFade, .5, {
+              backgroundColor: '#000000',
+              opacity: .9,
+            })
+            .set(node, { opacity: 0 })
         }
       }}
       in={match !== null}
       mountOnEnter={true}
-      timeout={6000}
+      timeout={1000}
       unmountOnExit={true}
     >
       {children}
@@ -41,11 +59,13 @@ const ShowcaseTransition: React.FC<IShowcaseTransition> = (props) => {
   )
 };
 
-const ShowcaseComponent: React.FC = () => {
-  const {
-    currentSlide,
-    handleSlideChange
-  }: any = useContext(ShowcaseContext);
+interface IShowCaseComponent {
+  currentSlide: number,
+  handleSlideChange: (...args: any[]) => void;
+}
+
+const ShowcaseComponent: React.FC<IShowCaseComponent> = (props) => {
+  const { currentSlide, handleSlideChange } = props;
 
   const slidesRef = useRef<Array<Element>>([]);
 
@@ -53,9 +73,9 @@ const ShowcaseComponent: React.FC = () => {
 
   const sliderStatusRef = useRef<boolean>(false);
 
-  const { current: tl } = useRef(new TimelineLite());
+  const { current: tl } = useRef<TimelineLite>(new TimelineLite());
 
-  const slideTo = (slideNum: number) => {
+  const slideTo = (slideNum: number):void => {
     if (slideNum === currentSlide) return;
 
     if (tl.isActive()) tl.clear();
@@ -81,19 +101,18 @@ const ShowcaseComponent: React.FC = () => {
 
   return (
     <div className="showcase page">
-      {slidesData.map((slideData, index) => {
-        console.log('slideData.id', slideData.id);
+      {products.map((productData, index) => {
         return (
           <Slide
-            key={slideData.id}
+            key={productData.id}
             ref={el => { slidesRef.current[index] = el; }}
-            productLink={`product/${slideData.id}`}
-            slideData={slideData}
+            productLink={`product/${productData.id}`}
+            productData={productData}
           />
         )
       })}
       <div className="showcase__controls" style={{ zIndex: 3 }}>
-        {slidesData.map(({ subtitle, id, title }, index) => (
+        {products.map(({ subtitle, id, title }, index) => (
           <SliderControl
             key={id}
             ref={el => { sliderControlsRef.current[index] = el; }}
@@ -108,17 +127,17 @@ const ShowcaseComponent: React.FC = () => {
   );
 };
 
-
-interface IShowcase {
-  initialSlide?: number,
-  match: any
-}
-
-export const Showcase: React.FC<IShowcase> = (props) => {
-  const { match } = props;
+export const Showcase: React.FC<RouteComponentProps> = (props) => {
+  const { currentSlide, handleSlideChange }  = useContext(ShowcaseContext);
   return (
-    <ShowcaseTransition match={match}>
-      <ShowcaseComponent />
+    <ShowcaseTransition
+      {...props}
+      currentSlide={currentSlide}
+    >
+      <ShowcaseComponent
+        currentSlide={currentSlide}
+        handleSlideChange={handleSlideChange}
+      />
     </ShowcaseTransition>
   )
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, RouteComponentProps } from 'react-router-dom';
 import { ShowcaseProvider } from './context/ShowcaseContext'
 import { Showcase } from './routes/Showcase';
 import { Product } from './routes/Product';
@@ -12,9 +12,9 @@ const routes = [
 export const App: React.FC = () => {
   return (
     <ShowcaseProvider>
-      {routes.map(({path, Component}) => (
-        <Route exact key={path} path={path}>
-          {({match}) => <Component match={match} />}
+      {routes.map(({path, name, Component}) => (
+        <Route exact id={name} key={path} path={path}>
+          {(props:RouteComponentProps<any>) => <Component {...props} />}
         </Route>
       ))}
     </ShowcaseProvider>
