@@ -1,4 +1,4 @@
-export interface IProduct {
+export interface IProductData {
   description: string;
   id: string;
   imageUrl: string;
@@ -6,7 +6,7 @@ export interface IProduct {
   title: string;
 }
 
-export const products: IProduct[] = [
+export const products: IProductData[] = [
   {
     description: "At Mclaren, we refuse to accept what`s gone before.Instead, we find a different way. A better way.",
     id: "1",

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import "./styles.scss";
 
 interface ISlideProps {
+  isCurrent: boolean,
   productLink: string,
   productData: {
     description: string,
@@ -13,6 +14,7 @@ interface ISlideProps {
 
 export const Slide = React.forwardRef<any, ISlideProps>((props, ref) => {
   const {
+    isCurrent,
     productLink,
     productData: { description, imageUrl, title }
   } = props;
@@ -34,7 +36,10 @@ export const Slide = React.forwardRef<any, ISlideProps>((props, ref) => {
     <div
       ref={ref}
       className="slide"
-      style={{opacity: 0}}
+      style={{
+        opacity: isCurrent ? 1 : 0,
+        pointerEvents: isCurrent ? 'auto' : 'none'
+      }}
     >
       <div className="slide__image-wrapper">
         <img className="slide__image" src={imageUrl} alt={title} />
