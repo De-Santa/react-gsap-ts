@@ -8,9 +8,11 @@ import { Product } from './routes/Product';
 import {
   enterDefault,
   exitDefault,
+  enterProduct,
+  exitProduct,
   enterShowcase,
   exitShowcase,
-} from './timelines/routeTransitions';
+} from './route_transitions';
 import 'normalize.css';
 import './styles/initial.scss';
 import * as serviceWorker from './serviceWorker';
@@ -28,26 +30,27 @@ ReactDOM.render(
           <Route>
             {({ location }:RouteComponentProps<any>) => {
               const { key, pathname } = location;
+              console.log('pathname', pathname);
               return (
                 <TransitionGroup>
                   <Transition
                     key={key}
                     appear={true}
                     onEnter={(node, isAppearing) => {
-                      switch (pathname) {
-                        case '/':
-                          return enterShowcase(currentSlide, isAppearing, node);
-                        default:
-                          return !isAppearing ? enterDefault(node) : null;
-                      }
+                      if (pathname === '/')
+                        return enterShowcase(currentSlide, isAppearing, node);
+                      if (!isAppearing && pathname.search('/product') > -1)
+                        return enterProduct(node);
+
+                      return !isAppearing ? enterDefault(node) : null;
                     }}
                     onExit={(node) => {
-                      switch (pathname) {
-                        case '/':
-                          return exitShowcase(currentSlide, node);
-                        default:
-                          return exitDefault(node);
-                      }
+                      if (pathname === '/')
+                        return exitShowcase(currentSlide, node);
+                      if (pathname.search('/product') > -1)
+                        return exitProduct(node);
+
+                      return exitDefault(node);
                     }}
                     timeout={2000}
                   >

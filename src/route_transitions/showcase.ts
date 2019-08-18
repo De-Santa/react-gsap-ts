@@ -1,38 +1,5 @@
 import { TimelineLite } from 'gsap';
-
-export const darkenIn = (
-  fadeElement:Element,
-):TimelineLite => {
-  const tl = new TimelineLite();
-
-  tl.set(fadeElement, {
-      backgroundColor: '#000000',
-      opacity: .9,
-    })
-    .to(fadeElement, 1, {
-      backgroundColor: '#150d05',
-      opacity: .6
-    });
-
-  return tl;
-};
-
-export const darkenOut = (
-  fadeElement:Element
-):TimelineLite => {
-  const tl = new TimelineLite();
-
-  tl.set(fadeElement, {
-      backgroundColor: '#150d05',
-      opacity: .6
-    })
-    .to(fadeElement, 1, {
-      backgroundColor: '#000000',
-      opacity: .9
-    });
-
-  return tl
-};
+import { darkenIn, darkenOut } from './common';
 
 const showcaseTl = (
   direction:'in'|'out',
@@ -49,12 +16,12 @@ const showcaseTl = (
   switch (direction) {
     case 'in':
       tl.staggerFromTo(
-          activeSlideContent.children,
-          0.6,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0 },
-          0.2
-        )
+        activeSlideContent.children,
+        0.6,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0 },
+        0.2
+      )
         .staggerFromTo(
           sliderControls.children,
           0.6,
@@ -75,34 +42,6 @@ const showcaseTl = (
   return tl;
 };
 
-export const enterDefault = (node:Element) => {
-  const delay = 1;
-  const tl = new TimelineLite({ paused: true });
-  const fadeElement = node.querySelector('[data-animate="fade-element"]');
-
-  if (!fadeElement) throw new Error('no fade element found');
-
-  tl.delay(delay);
-
-  tl.set(node, { zIndex: 2})
-    .add(darkenIn(fadeElement))
-    .set(node, { zIndex: 1});
-
-  tl.play();
-};
-
-export const exitDefault = (node:Element) => {
-  const tl = new TimelineLite({ paused: true });
-  const fadeElement = node.querySelector('[data-animate="fade-element"]');
-
-  if (!fadeElement) throw new Error('no fade element found');
-
-  tl.add(darkenOut(fadeElement))
-    .set(node, { opacity: 0 });
-
-  tl.play();
-};
-
 export const enterShowcase = (
   currentSlide:number,
   isAppearing:boolean,
@@ -119,10 +58,8 @@ export const enterShowcase = (
 
     tl.delay(delay);
 
-    tl.set(node,{zIndex: 2})
-      .add(darkenIn(fadeElement))
+    tl.add(darkenIn(fadeElement))
       .add(showcaseTl('in', node, currentSlide), 0)
-      .set(node,{zIndex: 1});
   }
 
   tl.play();
@@ -138,7 +75,7 @@ export const exitShowcase = (
 
   tl.add(darkenOut(fadeElement))
     .add(showcaseTl('out', node, currentSlide), '-=1')
-    .set(node, { opacity: 0 });
+    .set(node, { display: 'none' });
 
   tl.duration(1);
 

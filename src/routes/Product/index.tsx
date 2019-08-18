@@ -1,6 +1,16 @@
-import React, { useMemo, useRef } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import React, { useMemo, useRef, useEffect } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
+import {
+  TweenMax,
+  TimelineMax,
+  TimelineLite
+} from 'gsap';
+// @ts-ignore
+import ScrollMagic from '../../../node_modules/scrollmagic'
+import '../../../node_modules/scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators'
 import { IProductData, products } from '../../products'
+import { HeroSection } from './components/HeroSection'
+import './simplebar.css';
 import './styles.scss';
 
 type TMatchParams = {
@@ -11,6 +21,19 @@ export const Product:React.FC<RouteComponentProps<TMatchParams>> = (props) => {
   const { match } = props;
 
   const { current: productId } = useRef<string>(match.params.id);
+
+  const heroRef = useRef<HTMLDivElement>(null);
+  const heroContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const controller = new ScrollMagic.Controller();
+    new ScrollMagic.Scene({
+      triggerElement: heroRef.current
+    })
+      .setTween(heroContentRef.current, 0.5, {backgroundColor: "green", scale: 2.5}) // trigger a TweenMax.to tween
+      // .addIndicators({name: "1 (duration: 0)"}) // add indicators (requires plugin)
+      .addTo(controller);
+  }, []);
 
   const product = useMemo<IProductData>(
     () => products.find((product) => product.id === productId) || products[0],
@@ -31,9 +54,12 @@ export const Product:React.FC<RouteComponentProps<TMatchParams>> = (props) => {
         />
       </div>
       <div className="product__content">
-        Product test, { product.id }
-        product.description<br />
-        <Link to="/">Back home</Link>
+        <HeroSection product={product} />
+        <div ref={heroRef} style={{ height: '100vh', position: 'relative'}}>
+          <div ref={heroContentRef} style={{fontSize: '40px', color: 'white'}}>
+            sup
+          </div>
+        </div>
       </div>
     </div>
   );
