@@ -30,7 +30,6 @@ ReactDOM.render(
           <Route>
             {({ location }:RouteComponentProps<any>) => {
               const { key, pathname } = location;
-              console.log('pathname', pathname);
               return (
                 <TransitionGroup>
                   <Transition
